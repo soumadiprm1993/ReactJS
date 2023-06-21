@@ -1,33 +1,30 @@
+import { useState } from "react";
 import Card from "../ContainerUIComp/Card";
-import ExpenseItem from "./ExpenseItem";
+import ExpenseFilter from "./ExpenseFilter";
 import "./Expense.css";
+import ExpenseList from "./ExpenseList";
+import ExpenseChart from "./ExpenseChart";
 
 // function Expense(props) {
 const Expense = (props) => {
-  const item = props.item;
+  const [dateFilter, setDateFilter] = useState("See All");
+
+  const filteredExpenseItems = (dateFilter==="See All") ? props.item : props.item.filter(
+    (expense) => expense.date.getFullYear().toString() === dateFilter
+  );
+
+  const selectHandler = (filteredDate) => {
+    setDateFilter(filteredDate);
+  };
+
   return (
-    <Card className="expenses">
-      <ExpenseItem
-        title={item[0].title}
-        date={item[0].date}
-        amount={item[0].amount}
-      />
-      <ExpenseItem
-        title={item[1].title}
-        date={item[1].date}
-        amount={item[1].amount}
-      />
-      <ExpenseItem
-        title={item[2].title}
-        date={item[2].date}
-        amount={item[2].amount}
-      />
-      <ExpenseItem
-        title={item[3].title}
-        date={item[3].date}
-        amount={item[3].amount}
-      />
-    </Card>
+    <li>
+      <Card className="expenses">
+        <ExpenseFilter defaultValue={dateFilter} onSelectDate={selectHandler} />
+        <ExpenseChart expenseItem={filteredExpenseItems}></ExpenseChart>
+        <ExpenseList expenseItem={filteredExpenseItems} />
+      </Card>
+    </li>
   );
 };
 

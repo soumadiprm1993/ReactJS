@@ -1,18 +1,19 @@
 import { useState } from "react";
 import "./AddExpenseForm.css";
 
-const AddExpenseForm = () => {
+const AddExpenseForm = (props) => {
   const [enterdedTitle, setEnteredTitle] = useState("");
   const [enterdedAmount, setEnteredAmount] = useState("");
   const [enterdedDate, setEnteredDate] = useState("");
+  const [showForm, setShowForm] = useState(false);
 
-//   Alternative approach to update the state
+  //   Alternative approach to update the state
 
-// const [userInput, setUserInput] = useState({
-//     enterdedTitle: '',
-//     enterdedAmount: '',
-//     enterdedDate: ''
-// })
+  // const [userInput, setUserInput] = useState({
+  //     enterdedTitle: '',
+  //     enterdedAmount: '',
+  //     enterdedDate: ''
+  // })
 
   const titleChangeHandler = (event) => {
     setEnteredTitle(event.target.value);
@@ -35,19 +36,40 @@ const AddExpenseForm = () => {
 
   const submitHandler = (event) => {
     event.preventDefault();
-    console.log(enterdedTitle, enterdedAmount, enterdedDate);
 
-    setEnteredTitle('');
-    setEnteredAmount('');
-    setEnteredDate('');
-    
+    const expenseData = {
+      title: enterdedTitle,
+      amount: +enterdedAmount,
+      date: new Date(enterdedDate),
+    };
+
+    props.onAddExpense(expenseData);
+
+    setEnteredTitle("");
+    setEnteredAmount("");
+    setEnteredDate("");
+
+    clickHandlerShowForm();
   };
+
+  const clickHandlerShowForm = () => {
+    setShowForm(!showForm);
+  };
+
+  if (!showForm) {
+    return <button onClick={clickHandlerShowForm}> Add New Expense </button>;
+  }
+
   return (
     <form onSubmit={submitHandler}>
       <div className="new-expense__controls">
         <div className="new-expense__control">
           <label> Expense Title </label>
-          <input type="text" onChange={titleChangeHandler} value={enterdedTitle}></input>
+          <input
+            type="text"
+            onChange={titleChangeHandler}
+            value={enterdedTitle}
+          ></input>
         </div>
         <div className="new-expense__control">
           <label> Amount </label>
@@ -70,6 +92,10 @@ const AddExpenseForm = () => {
           ></input>
         </div>
       </div>
+      <button type="button" onClick={clickHandlerShowForm}>
+        {" "}
+        Cancel{" "}
+      </button>
       <button type="submit"> Add Expense </button>
     </form>
   );
